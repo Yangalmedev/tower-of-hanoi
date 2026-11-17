@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>Hanoi — The Tower Puzzle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#"><span class="brand-mark"><i></i><i></i><i></i></span><span>HANOI<span class="brand-light">/</span></span></a>
+      <div class="top-meta"><span class="live-dot"></span> PROLOG GAME ENGINE <span class="meta-divider">/</span> <span id="connection">CONNECTING</span></div>
+      <button class="icon-button" id="helpBtn" aria-label="How to play">?</button>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="eyebrow"><span class="eyebrow-line"></span> A CLASSIC LOGIC CHALLENGE</div>
+        <h1>Move with <em>intention.</em></h1>
+        <p class="subtitle">Move every disk to the final tower. One simple rule: never place a larger disk on a smaller one.</p>
+      </section>
+
+      <section class="game-layout">
+        <aside class="sidebar">
+          <div class="panel difficulty-panel">
+            <div class="panel-label">YOUR CHALLENGE <span class="label-number">01</span></div>
+            <h2>Set the pace</h2>
+            <p class="muted">Choose how many disks to solve.</p>
+            <div class="disk-options" id="diskOptions">
+              <button data-disks="3">3</button><button data-disks="4" class="selected">4</button>
+              <button data-disks="5">5</button><button data-disks="6">6</button>
+              <button data-disks="7">7</button><button data-disks="8">8</button>
+            </div>
+            <div class="difficulty-foot"><span>MINIMUM MOVES</span><strong id="minimum">15</strong></div>
+          </div>
+
+          <div class="panel stats-panel">
+            <div class="panel-label">LIVE STATS <span class="label-number">02</span></div>
+            <div class="stat-row"><div><span class="stat-icon">↗</span><span class="stat-name">Moves made</span></div><strong id="moves">0</strong></div>
+            <div class="stat-row"><div><span class="stat-icon">◷</span><span class="stat-name">Time elapsed</span></div><strong id="timer">00:00</strong></div>
+            <div class="stat-row"><div><span class="stat-icon">◎</span><span class="stat-name">Best possible</span></div><strong id="best">15</strong></div>
+            <div class="progress-wrap"><div class="progress-label"><span>YOUR PROGRESS</span><span id="progressText">0%</span></div><div class="progress-track"><div id="progressBar"></div></div></div>
+          </div>
+
+          <div class="tip-card"><span class="tip-spark">✳</span><div><strong>Think ahead.</strong><p>The optimal solution always takes exactly 2ⁿ − 1 moves.</p></div></div>
+        </aside>
+
+        <section class="board-panel">
+          <div class="board-head">
+            <div><div class="panel-label">THE PLAYING FIELD <span class="label-number">03</span></div><h2>Three towers. One goal.</h2></div>
+            <div class="board-actions"><button class="secondary-btn" id="undoBtn" disabled>↶ <span>Undo</span></button><button class="secondary-btn" id="resetBtn">↻ <span>Reset</span></button></div>
+          </div>
+
+          <div class="board" id="board">
+            <div class="tower-area" data-peg="a"><div class="tower-tag">01 <span>START</span></div><div class="pole"></div><div class="disk-stack" id="peg-a"></div><div class="base"></div><button class="peg-select" data-target="a">TOWER A</button></div>
+            <div class="tower-area" data-peg="b"><div class="tower-tag">02 <span>BUFFER</span></div><div class="pole"></div><div class="disk-stack" id="peg-b"></div><div class="base"></div><button class="peg-select" data-target="b">TOWER B</button></div>
+            <div class="tower-area" data-peg="c"><div class="tower-tag">03 <span>GOAL</span></div><div class="pole"></div><div class="disk-stack" id="peg-c"></div><div class="base"></div><button class="peg-select" data-target="c">TOWER C</button></div>
+          </div>
+
+          <div class="board-footer">
+            <div class="selection-hint" id="hint"><span class="hint-dot"></span> Select a disk, then choose its destination tower.</div>
+            <button class="solve-btn" id="solveBtn"><span>✦</span> AUTO SOLVE</button>
+          </div>
+          <div class="legend"><span><i class="legend-dot active-dot"></i> Selected disk</span><span><i class="legend-dot"></i> Available move</span><span class="keyboard-note">TIP: Click a disk to pick it up</span></div>
+        </section>
+      </section>
+      <footer class="footer"><span>HANOI / A STUDY IN SIMPLICITY</span><span>POWERED BY <b>SWI-PROLOG</b></span></footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="modal-backdrop" id="modal">
+    <div class="modal-card"><button class="modal-close" id="closeModal">×</button><div class="modal-kicker">PUZZLE COMPLETE</div><div class="win-icon">✦</div><h2>Beautifully solved.</h2><p id="winMessage">You moved every disk to the goal tower.</p><div class="win-stats"><div><span>MOVES</span><strong id="finalMoves">0</strong></div><div><span>TIME</span><strong id="finalTime">00:00</strong></div></div><button class="primary-btn" id="playAgain">PLAY AGAIN <span>→</span></button></div>
+  </div>
+  <div class="modal-backdrop" id="helpModal">
+    <div class="modal-card help-card"><button class="modal-close" id="closeHelp">×</button><div class="modal-kicker">HOW TO PLAY</div><h2>Three rules. That's it.</h2><ol><li><b>Move one disk at a time.</b><span>Only the top disk of a tower can be moved.</span></li><li><b>Keep the order.</b><span>A larger disk can never sit on top of a smaller disk.</span></li><li><b>Reach the goal.</b><span>Move the entire stack from Tower A to Tower C.</span></li></ol><button class="primary-btn" id="gotIt">GOT IT <span>→</span></button></div>
+  </div>
+  <script src="/app.js"></script>
+</body></html>
